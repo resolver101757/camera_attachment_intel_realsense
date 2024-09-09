@@ -42,20 +42,22 @@ module attachment(screw_rotation) {
             // 1. Attachment-block
             cube([attachment_block_length, attachment_block_width, attachment_block_thickness]);
             
-            // 2. Mid-block
-            translate([attachment_block_length/2 - mid_block_width/2, attachment_block_width/2 - mid_block_width/2, attachment_block_thickness])
-                cube([mid_block_width, mid_block_width, mid_block_height]);
+            // 2. Mid-block (modified to attach to y-positive face)
+            translate([attachment_block_length/2 - mid_block_width/2, attachment_block_width, 0])
+                cube([mid_block_width, mid_block_height, attachment_block_thickness]);
             
-            // 3. Camera attachment
-            translate([attachment_block_length/2 - mid_block_width/2, attachment_block_width/2 - camera_attachment_width/2, attachment_block_thickness + mid_block_height])
-                cube([mid_block_width + camera_attachment_height, camera_attachment_width, camera_attachment_depth]);
+            // 3. Camera attachment (adjusted position)
+            translate([attachment_block_length/2 - mid_block_width/2, 
+                       attachment_block_width + mid_block_height, 
+                       attachment_block_thickness/2 - camera_attachment_width/2])
+                cube([mid_block_width + camera_attachment_height, camera_attachment_depth, camera_attachment_width]);
             
-            // 4. Camera screw block (attached to bottom face of camera attachment, at top of x-axis)
-            translate([attachment_block_length/2 - mid_block_width/2 + mid_block_width + camera_attachment_height - camera_screw_height,
-                       attachment_block_width/2 - camera_screw_width/2,
-                       attachment_block_thickness + mid_block_height - camera_screw_depth + 3])
-                rotate([0, screw_rotation, 0])  // Use the parameter for rotation
-                cube([camera_screw_height, camera_screw_width, camera_screw_depth]);
+            // 4. Camera screw block (adjusted position to join the face of Camera attachment block)
+            translate([attachment_block_length/2 - mid_block_width + mid_block_width + camera_attachment_height,
+                       attachment_block_width*2 + mid_block_height + camera_attachment_depth + camera_screw_height/2,
+                       attachment_block_thickness - camera_screw_width/4])
+                rotate([90, screw_rotation, 0])  // Changed rotation axis
+                cube([camera_screw_height, camera_screw_depth, camera_screw_width]);
         }
 
         // Subtract a hole for the bar to fit in the attachment-block
@@ -68,15 +70,17 @@ module attachment(screw_rotation) {
 
         // Add two screw holes for Intel RealSense camera
         translate([attachment_block_length/2 - mid_block_width/2 + mid_block_width + camera_attachment_height - camera_screw_height/2,
-                   attachment_block_width/2 - intel_realsense_screw_hole_spacing/2,
-                   attachment_block_thickness + mid_block_height - camera_screw_depth - 0.1])
-            cylinder(h = camera_screw_depth + 0.2, d = intel_realsense_screw_hole_diameter, $fn=32);
+                   attachment_block_width + mid_block_height + camera_attachment_depth + 0.1,
+                   attachment_block_thickness/2 - intel_realsense_screw_hole_spacing/2])
+            rotate([0, 0, 0])
+            cylinder(h = camera_attachment_depth + camera_screw_depth + 0.2, d = intel_realsense_screw_hole_diameter, $fn=32);
 
         // Second screw hole for Intel RealSense camera
         translate([attachment_block_length/2 - mid_block_width/2 + mid_block_width + camera_attachment_height - camera_screw_height/2,
-                   attachment_block_width/2 + intel_realsense_screw_hole_spacing/2,
-                   attachment_block_thickness + mid_block_height - camera_screw_depth - 0.1])
-            cylinder(h = camera_screw_depth + 0.2, d = intel_realsense_screw_hole_diameter, $fn=32);
+                   attachment_block_width + mid_block_height + camera_attachment_depth + 0.1,
+                   attachment_block_thickness/2 + intel_realsense_screw_hole_spacing/2])
+            rotate([0, 0, 0])
+            cylinder(h = camera_attachment_depth + camera_screw_depth + 0.2, d = intel_realsense_screw_hole_diameter, $fn=32);
     }
 }
 
