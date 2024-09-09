@@ -19,18 +19,24 @@ camera_attachment_width = mid_block_width;  // Width of the camera attachment bl
 camera_attachment_depth = 15; // Depth of the camera attachment block
 camera_attachment_height = 50;  // Height of the camera attachment block
 
-// Camera screw block parameters
+// 4. Camera screw block parameters
 camera_screw_height = 10;  // Height of the camera screw block
-camera_screw_depth = 10; // Depth of the camera screw block
+camera_screw_depth = 5; // Depth of the camera screw block
 camera_screw_width = 50;  // Width of the camera screw block
+camera_screw_width_rotation = 10;
 
-// New parameters for screw holes
+
+// 5.   New parameters for screw holes
 intel_realsense_screw_hole_diameter = 2.5;  // Diameter of the screw holes
 intel_realsense_screw_hole_spacing = 45;    // Spacing between the two screw holes
 
+// 6. New parameters for screw holes
+
+
+
 
 // Attachment block
-module attachment() {
+module attachment(screw_rotation) {
     difference() {
         union() {
             // 1. Attachment-block
@@ -47,7 +53,8 @@ module attachment() {
             // 4. Camera screw block (attached to bottom face of camera attachment, at top of x-axis)
             translate([attachment_block_length/2 - mid_block_width/2 + mid_block_width + camera_attachment_height - camera_screw_height,
                        attachment_block_width/2 - camera_screw_width/2,
-                       attachment_block_thickness + mid_block_height - camera_screw_depth])
+                       attachment_block_thickness + mid_block_height - camera_screw_depth + 3])
+                rotate([0, screw_rotation, 0])  // Use the parameter for rotation
                 cube([camera_screw_height, camera_screw_width, camera_screw_depth]);
         }
 
@@ -73,5 +80,7 @@ module attachment() {
     }
 }
 
-// Render the attachment
-attachment();
+// Render three attachments with different rotations and positions
+translate([0, 0, 0]) attachment(10);
+translate([0, attachment_block_width + 40, 0]) attachment(20);
+translate([0, (attachment_block_width + 40) * 2, 0]) attachment(30);
