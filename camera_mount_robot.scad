@@ -22,7 +22,7 @@ camera_attachment_height = 50;  // Height of the camera attachment block
 // 4. Camera screw block parameters
 camera_screw_height = 5;  // Height of the camera screw block
 camera_screw_depth = 50; // Depth of the camera screw block
-camera_screw_width = 10;  // Width of the camera screw block
+camera_screw_width = 20;  // Width of the camera screw block
 camera_screw_width_rotation = 10;
 
 
@@ -74,14 +74,14 @@ module attachment(screw_rotation) {
 
         // Define position for Intel RealSense screw holes
         screw_hole_position_left = [
-            mid_block_height + camera_attachment_height,
+            mid_block_height + camera_attachment_height + 8,
             attachment_block_width + mid_block_width + attachment_block_width/2 - camera_attachment_height/2,
             attachment_block_thickness/2 - intel_realsense_screw_hole_spacing/2 
         ];
 
         // Define position for Intel RealSense screw holes
         screw_hole_position_right = [
-            mid_block_height + camera_attachment_height,
+            mid_block_height + camera_attachment_height + 8,
             attachment_block_width + mid_block_width + attachment_block_width/2 - camera_attachment_height/2 + intel_realsense_screw_hole_spacing,
             attachment_block_thickness/2 - intel_realsense_screw_hole_spacing/2 
         ];
