@@ -38,30 +38,29 @@ intel_realsense_screw_hole_spacing = 45;    // Spacing between the two screw hol
 module attachment(screw_rotation) {
     difference() {
         union() {
-            // 1. Attachment-block
-            color("red")  // Set color for the attachment block
-            cube([attachment_block_length, attachment_block_width, attachment_block_thickness]);
+            // 1. Attachment-block with rounded edges
+            color("red")
+            rounded_cube([attachment_block_length, attachment_block_width, attachment_block_thickness], 2); // Radius of rounding
             
-
-            // 2. Mid-block (modified to attach to y-positive face)
-            color("green")  // Set color for the mid-block
+            // 2. Mid-block with rounded edges
+            color("green")
             translate([attachment_block_length/2 - mid_block_width/2, attachment_block_width, 0])
-                cube([mid_block_width, mid_block_height, attachment_block_thickness]);
+                rounded_cube([mid_block_width, mid_block_height, attachment_block_thickness], 2);
             
-            // 3. Camera attachment (adjusted position)
-            color("blue")  // Set color for the camera attachment
+            // 3. Camera attachment with rounded edges
+            color("blue")
             translate([attachment_block_length/2 - mid_block_width/2, 
                        attachment_block_width + mid_block_height, 
                        attachment_block_thickness/2 - camera_attachment_width/2])
-                cube([mid_block_width + camera_attachment_height, camera_attachment_depth, camera_attachment_width]);
+                rounded_cube([mid_block_width + camera_attachment_height, camera_attachment_depth, camera_attachment_width], 2);
             
-            // 4. Camera screw block (adjusted position to join the face of Camera attachment block)
-            color("yellow")  // Set color for the camera screw block
+            // 4. Camera screw block with rounded edges
+            color("yellow")
             translate([attachment_block_length/2  + camera_attachment_height,
                        attachment_block_width + camera_screw_height/2,
                        -2])
-                rotate([0, screw_rotation, 0])  // Changed rotation axis
-                cube([ camera_screw_width,camera_screw_depth,camera_screw_height ]);
+                rotate([0, screw_rotation, 0])
+                rounded_cube([camera_screw_width, camera_screw_depth, camera_screw_height], 2);
         }
 
         // Subtract a hole for the bar to fit in the attachment-block
@@ -98,7 +97,21 @@ module attachment(screw_rotation) {
     }
 }
 
+// Function to create a rounded cube
+module rounded_cube(size, radius) {
+    hull() {
+        for (x = [0, size[0]]) {
+            for (y = [0, size[1]]) {
+                for (z = [0, size[2]]) { // Added z-axis rounding
+                    translate([x, y, z])
+                        cylinder(r = radius, h = size[2], $fn=16);
+                }
+            }
+        }
+    }
+}
+
 // Render three attachments with different rotations and positions
 translate([0, 0, 0]) attachment(10);
-translate([0, attachment_block_width + 40, 0]) attachment(20);
-translate([0, (attachment_block_width + 40) * 2, 0]) attachment(30);
+translate([0, attachment_block_width + 45, 0]) attachment(20);
+translate([0, (attachment_block_width + 45) * 2, 0]) attachment(30);
